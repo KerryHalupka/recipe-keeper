@@ -1,3 +1,7 @@
+# project-specific ignores
+recipe_book_env/
+data/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

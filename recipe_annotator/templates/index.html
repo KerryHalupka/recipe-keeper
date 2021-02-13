@@ -1,0 +1,105 @@
+<!doctype html>
+<html style="height:100%;">
+<head>
+    <title>Tagger</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"></link>
+    <link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css" rel="stylesheet"></link>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+
+</head>
+<body style="height:100%;">
+<nav id="sidebar" style="
+            width: 25%;
+            height: 100%;
+            float: left;
+            z-index: 8000;
+            margin-bottom: 0px;">
+    <div class="panel panel-default" style="height: 100%;">
+        <div class="panel-heading">
+            <h3 class="panel-title">Labels</h3>
+        </div>
+        <div class="panel-body">
+            <div class="list-group">
+              {% for label in roi %}
+                <div class="list-group-item">
+                    <div class="input-group">
+                      <script>
+                        console.log(roi)
+                      </script>
+                        <span class="input-group-addon" id="id">{{ label.id }}</span>
+                        {% if label.type %}
+                            <text style="background-color:#E5E7E9;" class="form-control custom-control" style="resize:none">{{ label.type }}</text>
+                            <span class="input-group-btn">
+                                <!-- <button class="btn btn-danger" type="button">-</button> -->
+                            </span>
+                        {% else %}
+                            <input id= "{{ label.id }}" onkeydown="if (event.keyCode == 13) { label(this.id, this.value); }" type="text" class="form-control" placeholder="label name" autofocus></input>
+                        {% endif %}
+                        <span class="input-group-btn">
+                            <button id= "{{ label.id }}" class="btn btn-danger" onclick="window.location.replace('/remove/' + this.id)" type="button">-</button> if (event.keyCode == 13) { label(this.id, this.value); }
+                        </span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</nav>
+<div id="content" class="container" style="
+            width: 75%;
+            height: 100%;
+            float: right;
+            z-index: 8000;
+            margin-bottom:
+            0px;">
+    <div class="row">
+      <form name="rclass" class="radio-toolbar">
+        <input type="radio" id="Name" name="class" value="Name" checked="checked">
+        <label for="Name">Name   </label>
+        <input type="radio" id="Ingredients" name="class" value="Ingredients">
+        <label for="Ingredients">Ingredients   </label>
+        <input type="radio" id="Method" name="class" value="Method">
+        <label for="Method">Method   </label>
+        <input type="radio" id="Picture" name="class" value="Picture">
+        <label for="Picture">Picture   </label>
+      
+    {% if not_end %}
+      <a href="/next" class="btn btn-primary" style="float:right;background: none #fafafa;
+      color: #444; border-color: #444;" type="button">
+        <span class="glyphicon glyphicon-arrow-right"></span>
+      </a>
+    {% else %}
+      <a href="/next" class="btn btn-primary" style="float:right; background: none #fafafa;
+      color: #444; border-color: #444;" type="button">
+        <span class="glyphicon glyphicon-ok"> </span>
+      </a>
+    {% endif %}
+    </div>
+  </form>
+    <div id="canvas">
+        <canvas id="imgbox" style="height:90%; width:100%"></canvas>
+    </div>
+    <script>
+      var labels = {{ labels|tojson|safe }};
+      var c = document.getElementById("imgbox");
+      var ctx = c.getContext("2d");
+      var image = new Image();
+      console.log(image);
+      image.onload = function(e) {
+        ctx.canvas.width = image.width;
+        ctx.canvas.height = image.height;
+        c.width = image.width;
+        c.height = image.height;
+        ctx.drawImage(image, 0, 0);
+        console.log(labels);
+      };
+      image.style.display="block";
+      image.src = "image/{{ image }}";
+    </script>
+      
+</div>
+</body>
+<script src="{{ url_for('static', filename='js/initialise.js') }}"></script>
+</html>
